@@ -5,7 +5,7 @@
         v-for="filter in filters"
         :key="filter.value"
         :class="['todo-filter__button', { 'todo-filter__button--active': store.filter === filter.value }]"
-        @click="store.filter = filter.value"
+        @click="handleFilterChange(filter.value)"
       >
         {{ getFilterLabel(filter.value) }}
       </button>
@@ -24,6 +24,7 @@ import { useSettingsStore } from '@/stores/settingsStore'
 
 const store = useTodoStore()
 const settingsStore = useSettingsStore()
+const emit = defineEmits(['tab-changed'])
 
 const filters = [
   { value: 'all' },
@@ -39,6 +40,12 @@ const getFilterLabel = (filterValue) => {
     default: return filterValue
   }
 }
+
+const handleFilterChange = (filterValue) => {
+  store.filter = filterValue
+  emit('tab-changed', filterValue) 
+}
+
 </script>
 
 <style scoped>

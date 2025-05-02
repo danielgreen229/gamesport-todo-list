@@ -17,6 +17,5 @@ const pinia = createPinia()
 
 const savedTheme = localStorage.getItem('theme') || 'light'
 document.documentElement.classList.toggle('dark', savedTheme === 'dark')
-console.log(savedTheme)
 
 createApp(App).use(router).use(pinia).mount('#app')

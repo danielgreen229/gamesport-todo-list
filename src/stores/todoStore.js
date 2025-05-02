@@ -9,6 +9,29 @@ export const useTodoStore = defineStore('todos', {
   }),
   
   actions: {
+    validatePriority(priority) {
+      const allowedPriorities = ['low', 'medium', 'high']
+      return allowedPriorities.includes(priority) ? priority : 'medium'
+    },
+    importTasks(tasks) {
+      const validatedTasks = tasks.map(task => ({
+        id: task.id || this.generateId(),
+        text: task.text?.trim() || 'Новая задача',
+        done: !!task.done,
+        priority: this._validatePriority(task.priority),
+        createdAt: task.createdAt || Date.now(),
+        updatedAt: Date.now()
+      }))
+      this.todos = validatedTasks
+      return validatedTasks.length
+    },
+    _validatePriority(priority) {
+      const allowed = ['low', 'medium', 'high']
+      return allowed.includes(priority) ? priority : 'medium'
+    },
+    generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2)
+    },
     addTodo({ text, priority }) {
       if (typeof text !== 'string' || text.trim() === '') {
         throw new Error('Текст задачи должен быть непустой строкой')
@@ -46,8 +69,28 @@ export const useTodoStore = defineStore('todos', {
       }
     }
   },
-  
   getters: {
+    totalTasks: (state) => state.todos.length,
+    completionPercentage: (state) => {
+      if (state.todos.length === 0) return 0
+      return Math.round((state.doneCount / state.todos.length) * 100)
+    },
+    getPaginatedTodos: (state) => (page, perPage) => {
+      const start = (page - 1) * perPage
+      const end = start + perPage
+      return state.filteredTodos.slice(start, end)
+    },
+    getTotalPages: (state) => (perPage) => {
+      return Math.ceil(state.filteredTodos.length / perPage)
+    },
+    paginatedTodos: (state) => (page, perPage) => {
+      const start = (page - 1) * perPage
+      const end = start + perPage
+      return state.filteredTodos.slice(start, end)
+    },
+    totalPages: (state) => (perPage) => {
+      return Math.ceil(state.filteredTodos.length / perPage)
+    },
     filteredTodos() {
       return this.todos.filter(t => {
         const matchesFilter = this.filter === 'all' || 
@@ -57,7 +100,6 @@ export const useTodoStore = defineStore('todos', {
         return matchesFilter && matchesSearch
       })
     },
-    
     doneCount() {
       return this.todos.filter(t => t.done).length
     }

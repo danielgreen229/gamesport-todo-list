@@ -6,6 +6,7 @@
       :class="{ 'todo-form__input--error': inputError }"
       :placeholder="settingsStore.t('home.addTaskPlaceholder')"
       @input="clearError"
+      maxlength="40"
     >
     
     <select 
