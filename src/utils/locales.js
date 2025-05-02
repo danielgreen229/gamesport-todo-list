@@ -15,6 +15,10 @@ export const translations = {
       completed: "Выполнено:",
       addTaskPlaceholder: "Добавьте задачу",
       nothingFound: "Ничего не найдено",
+      exportButton: 'Экспорт в JSON',
+      importButton: 'Импорт из JSON',
+      visible: 'Видно:',
+      of: 'из'
     },
     settings: {
       title: "Настройки",
@@ -44,6 +48,23 @@ export const translations = {
       activated: 'активирована',
       task: 'Задача'
     },
+    alerts: {
+      noTasks: 'Нет задач для экспорта',
+      importConfirm: 'Вы уверены, что хотите импортировать задачи? Текущие данные будут перезаписаны!',
+      importSuccess: 'Все задачи успешно импортированы',
+      importError: 'Ошибка импорта',
+      exportError: 'Ошибка экспорта'
+    },
+    errors: {
+      noFile: 'Файл не выбран',
+      invalidFileType: 'Недопустимый формат файла',
+      fileTooLarge: 'Файл слишком большой (макс. 1MB)',
+      invalidJson: 'Некорректный JSON-формат',
+      readingError: 'Ошибка чтения файла',
+      invalidStructure: 'Некорректная структура файла. Ожидается объект с массивом tasks',
+      unsupportedVersion: 'Неподдерживаемая версия файла',
+      exportError: 'Ошибка при создании файла экспорта'
+    }
   },
   en: {
     app: {
@@ -60,7 +81,11 @@ export const translations = {
       totalTasks: "Total tasks:",
       completed: "Completed:",
       addTaskPlaceholder: "Add a task",
-      nothingFound: "Nothing found"
+      nothingFound: "Nothing found",
+      exportButton: 'Export to JSON',
+      importButton: 'Import from JSON',
+      visible: 'Visible:',
+      of: 'of'
     },
     settings: {
       title: "Settings",
@@ -89,6 +114,23 @@ export const translations = {
       completed: 'completed',
       activated: 'activated',
       task: 'Task'
+    },
+    alerts: {
+      noTasks: 'No tasks to export',
+      importConfirm: 'Are you sure you want to import tasks? Current data will be overwritten!',
+      importSuccess: 'Successfully imported',
+      importError: 'Import error',
+      exportError: 'Export error'
+    },
+    errors: {
+      noFile: 'No file selected',
+      invalidFileType: 'Invalid file format',
+      fileTooLarge: 'File is too large (max. 1MB)',
+      invalidJson: 'Invalid JSON format',
+      readingError: 'Error reading file',
+      invalidStructure: 'Invalid file structure. Expected tasks array',
+      unsupportedVersion: 'Unsupported file version',
+      exportError: 'Export error'
     }
   }
-}
+};

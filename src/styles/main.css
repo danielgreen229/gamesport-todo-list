@@ -15,6 +15,9 @@
 }
 
 @layer components {
+  .dark todo-filter__button {
+    @apply bg-gray-800 text-white;
+  }
   .dark input {
     @apply bg-gray-800 text-white border-gray-600 focus:ring-blue-500 focus:border-blue-500;
   }

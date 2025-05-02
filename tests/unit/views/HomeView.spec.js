@@ -23,7 +23,6 @@ describe('HomeView', () => {
 
   it('shows empty state when no todos', () => {
     const todoStore = useTodoStore()
-    // Очищаем todos через action
     todoStore.todos = []
     
     const wrapper = mount(HomeView)
