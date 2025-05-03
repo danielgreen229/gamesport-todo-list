@@ -24,7 +24,7 @@
           href="mailto:support@todolist.com"
           class="about-card__link"
         >
-          support@todolist.com
+          https://t.me/dozer_stoun
         </a>
       </div>
     </div>
