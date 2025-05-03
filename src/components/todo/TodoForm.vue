@@ -7,9 +7,11 @@
       :placeholder="settingsStore.t('home.addTaskPlaceholder')"
       @input="clearError"
       maxlength="40"
+      data-testid="todo-input"
     >
     
-    <select 
+    <select
+      data-testid="priority-select" 
       v-model="selectedPriority"
       class="todo-form__priority"
     >
@@ -21,6 +23,7 @@
     <button 
       class="todo-form__button"
       :disabled="!newTodoValid"
+      data-testid="add-button"
     >
       {{ settingsStore.t('home.addTask') }}
     </button>

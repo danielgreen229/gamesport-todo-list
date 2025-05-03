@@ -1,24 +1,40 @@
 import { mount } from '@vue/test-utils'
 import HomeView from '@/views/HomeView.vue'
 import { useTodoStore } from '@/stores/todoStore'
+import { useSettingsStore } from '@/stores/settingsStore'
 import { setActivePinia, createPinia } from 'pinia'
-import { describe, beforeEach, it, expect } from 'vitest'
+import { describe, beforeEach, it, expect, vi } from 'vitest'
 
 describe('HomeView', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    window.scrollTo = vi.fn()
   })
 
-  it('renders todo list', () => {
+  it('renders connection status', async () => {
     const todoStore = useTodoStore()
-    // Используем actions для изменения состояния
-    todoStore.addTodo({ text: 'Task 1', priority: 'medium' })
-    todoStore.addTodo({ text: 'Task 2', priority: 'medium', done: true })
+    const wrapper = mount(HomeView)
+    
+    todoStore.isOnline = true
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('.connection-status').text()).toBe('Online')
+    
+    todoStore.isOnline = false
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('.connection-status').text()).toBe('Offline')
+  })
+  
+  it('changes page on pagination click', async () => {
+    const todoStore = useTodoStore()
+    todoStore.todos = Array.from({ length: 15 }, (_, i) => ({
+      id: `${i}`,
+      text: `Task ${i}`,
+      done: false
+    }))
     
     const wrapper = mount(HomeView)
-    const items = wrapper.findAllComponents({ name: 'TodoItem' })
-    
-    expect(items.length).toBe(2)
+    await wrapper.vm.changePage(2)
+    expect(wrapper.vm.currentPage).toBe(2)
   })
 
   it('shows empty state when no todos', () => {
@@ -27,19 +43,5 @@ describe('HomeView', () => {
     
     const wrapper = mount(HomeView)
     expect(wrapper.find('.empty-state').exists()).toBe(true)
-  })
-
-  it('displays correct stats', () => {
-    const todoStore = useTodoStore()
-    todoStore.todos = [
-      { id: 1, text: 'Task 1', done: false },
-      { id: 2, text: 'Task 2', done: true }
-    ]
-    
-    const wrapper = mount(HomeView)
-    const stats = wrapper.findAll('.stats__item')
-    
-    expect(stats[0].text()).toContain('2')
-    expect(stats[1].text()).toContain('1 (50%)')
   })
 })

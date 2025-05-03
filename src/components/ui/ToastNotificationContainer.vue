@@ -26,11 +26,11 @@
 
 <script setup>
 import { useNotificationStore } from '@/stores/notificationStore';
-import { storeToRefs } from 'pinia'; // Добавлено
+import { storeToRefs } from 'pinia'; 
 
 const notificationStore = useNotificationStore();
-const { notifications } = storeToRefs(notificationStore); // Сохраняем реактивность
-const { remove } = notificationStore; // Методы берём напрямую
+const { notifications } = storeToRefs(notificationStore);
+const { remove } = notificationStore;
 </script>
 
 <style scoped>

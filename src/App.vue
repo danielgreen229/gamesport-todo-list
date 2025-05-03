@@ -53,10 +53,9 @@ const navLinks = [
   @apply opacity-0;
 }
 
-/* Мобильная адаптация */
 @media (max-width: 640px) {
   nav {
-    justify-content: flex-start;
+    justify-content: center;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }

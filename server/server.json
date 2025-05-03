@@ -1,0 +1,6 @@
+{
+  "watch": true,
+  "port": 3001,
+  "routes": "server/routes.json",
+  "static": "./public"
+}

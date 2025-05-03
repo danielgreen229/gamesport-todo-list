@@ -1,21 +1,15 @@
 import { createApp } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
-
-import routes from './router'
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes
-})
-
-import "./styles/main.css"
-
+import router from './router'
 import { createPinia } from 'pinia'
-const pinia = createPinia()
+import './styles/main.css'
 
+const pinia = createPinia()
 
 const savedTheme = localStorage.getItem('theme') || 'light'
 document.documentElement.classList.toggle('dark', savedTheme === 'dark')
 
-createApp(App).use(router).use(pinia).mount('#app')
+const app = createApp(App)
+app.use(router)
+app.use(pinia)
+app.mount('#app')

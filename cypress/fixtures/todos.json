@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "text": "Тестирование первое",
+    "done": false,
+    "priority": "high",
+    "createdAt": "2023-01-01"
+  },
+  {
+    "id": 2,
+    "text": "Написание тестирования",
+    "done": true,
+    "priority": "medium",
+    "createdAt": "2023-01-02"
+  }
+]
