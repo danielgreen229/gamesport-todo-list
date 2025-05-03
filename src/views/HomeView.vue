@@ -1,5 +1,17 @@
 <template>
-  <div class="home-view">
+  <div class="home-view" data-testid="todo-list">
+    <div class="connection-status__container">
+      <div 
+        class="connection-status" 
+        :class="{ offline: !store.isOnline }"
+      >
+        {{ store.isOnline ? 'Online' : 'Offline' }}
+      </div>
+      <div v-if="store.isLoading" class="loading-overlay">
+        Синхронизация с сервером...
+      </div>
+    </div>
+
     <div class="toolbar">
       <button 
         @click="handleExport"
@@ -42,6 +54,7 @@
     <div 
       v-if="store.filteredTodos.length === 0" 
       class="empty-state"
+      data-testid="empty-state"
     >
       <p class="empty-state__text">
         {{ settingsStore.t(store.searchQuery ? 'home.nothingFound' : 'home.addTaskPlaceholder') }}
@@ -76,9 +89,14 @@
 import { ref, computed } from 'vue'
 import { useTodoStore } from '@/stores/todoStore'
 import { useSettingsStore } from '@/stores/settingsStore'
+import { defineAsyncComponent } from 'vue'
 import TodoForm from '@/components/todo/TodoForm.vue'
-import TodoItem from '@/components/todo/TodoItem.vue'
-import TodoFilter from '@/components/todo/TodoFilter.vue'
+const TodoItem = defineAsyncComponent(() =>
+  import('@/components/todo/TodoItem.vue')
+)
+const TodoFilter = defineAsyncComponent(() =>
+  import('@/components/todo/TodoFilter.vue')
+)
 import UPagination from '@/components/ui/UPagination.vue'
 import { useImportExport } from '@/composables/useImportExport'
 import { useFileHandling } from '@/composables/useFileHandling'
@@ -87,6 +105,19 @@ const settingsStore = useSettingsStore()
 const store = useTodoStore()
 const { exportData } = useImportExport()
 const { readTasksFile } = useFileHandling()
+import { onMounted, onBeforeUnmount } from 'vue'
+
+onMounted(async () => {
+  await store.fetchTodos()
+  store.setupNetworkListener?.();
+  window.addEventListener('online', () => store.setOnlineStatus(true));
+  window.addEventListener('offline', () => store.setOnlineStatus(false));
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('online', () => store.setOnlineStatus(true));
+  window.removeEventListener('offline', () => store.setOnlineStatus(false));
+});
 
 const currentPage = ref(1)
 const perPage = 10
@@ -103,6 +134,7 @@ const changePage = (page) => {
   currentPage.value = page
   scrollToTop()
 }
+
 
 const changeTab = () => {
   currentPage.value = 1
@@ -147,6 +179,18 @@ const scrollToTop = () => {
 </script>
 
 <style scoped>
+.connection-status {
+  @apply w-min pl-2 pr-2  rounded-full text-sm bg-green-500 text-white shadow-md;
+}
+
+.connection-status.offline {
+  @apply bg-red-500; 
+}
+
+.connection-status__container {
+  @apply fixed bottom-5 right-5 px-3 py-2  bg-[#9bbff9] text-white rounded-[1rem] p-10 z-50;
+}
+
 .empty-state {
   @apply text-gray-500 dark:text-gray-400 py-8 text-center;
 }
@@ -201,5 +245,11 @@ const scrollToTop = () => {
 
 .todo-list-leave-active {
   @apply absolute w-full;
+}
+
+@media (max-width: 640) {
+  .connection-status__container {
+    @apply pr-5 pl-5;
+  }
 }
 </style>

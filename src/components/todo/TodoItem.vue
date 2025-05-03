@@ -5,10 +5,12 @@
       'todo-item--done': todo.done,
       'todo-item--editing': isEditing
     }"
+    ref="todoItem"
   >
     <div class="todo-item__content">
       <label class="todo-item__checkbox-label">
         <input 
+          data-testid="toggle-checkbox"
           type="checkbox"
           :checked="todo.done"
           @change="toggleTodoStatus"
@@ -19,11 +21,12 @@
         
       <div class="todo-item__body">
         <div class="todo-item__main">
-          <input
+          <input 
             v-if="isEditing"
             v-model.trim="editedText"
             ref="editInput"
             class="todo-item__edit-input"
+            data-testid="todo-edit-input"
             @keyup.esc="cancelEdit"
             @keyup.enter="handleEditSave"
             @blur="handleEditSave"
@@ -32,6 +35,7 @@
             v-else
             class="todo-item__text"
             @dblclick="startEdit"
+            data-testid="todo-text"
           >
             {{ todo.text }}
           </div>
@@ -57,6 +61,7 @@
           class="todo-item__delete"
           @click="deleteTodo"
           aria-label="Удаление"
+          data-testid="delete-button"
         >
           &times;
         </button>
@@ -66,7 +71,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import { useTodoStore } from '@/stores/todoStore'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { useNotificationStore } from '@/stores/notificationStore'
@@ -84,11 +89,8 @@ const notificationStore = useNotificationStore()
 const editInput = ref(null)
 const isEditing = ref(false)
 const editedText = ref(props.todo.text)
-
-const handlePriorityChange = () => {
-  store.updateTodo(props.todo.id, props.todo.text, props.todo.priority)
-  notificationStore.show(settingsStore.t('notification.priorityUpdated'), 'success')
-}
+const todoItem = ref(null)
+const isVisible = ref(false)
 
 const formattedDate = computed(() => {
   const date = new Date(props.todo.createdAt)
@@ -100,6 +102,11 @@ const formattedDate = computed(() => {
     minute: '2-digit'
   })
 })
+
+const handlePriorityChange = () => {
+  store.updateTodo(props.todo.id, props.todo.text, props.todo.priority)
+  notificationStore.show(settingsStore.t('notification.priorityUpdated'), 'success')
+}
 
 const startEdit = async () => {
   if (props.todo.done) {
@@ -138,14 +145,38 @@ const toggleTodoStatus = () => {
   notificationStore.show(`${settingsStore.t('notification.task')} ${status}`, 'success')
 }
 
+
 const deleteTodo = () => {
   if (confirm(settingsStore.t('todoItem.deleteConfirm'))) {
     store.deleteTodo(props.todo.id)
     notificationStore.show(settingsStore.t('notification.taskDeleted'), 'warn')
   }
 }
-</script>
 
+onMounted(() => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        isVisible.value = true
+        observer.unobserve(entry.target)
+      }
+    })
+  }, {
+    rootMargin: '100px',
+    threshold: 0.1
+  })
+
+  if (todoItem.value) {
+    observer.observe(todoItem.value)
+  }
+
+  onUnmounted(() => {
+    if (todoItem.value) {
+      observer.unobserve(todoItem.value)
+    }
+  })
+})
+</script>
 
 <style scoped>
 .todo-item {
@@ -203,29 +234,27 @@ const deleteTodo = () => {
 
 .todo-item--done {
   @apply opacity-75 bg-gray-50 dark:bg-gray-700;
-  
-  .todo-item__checkmark {
-    @apply bg-gray-300 border-gray-300 dark:bg-gray-600 dark:border-gray-600;
-  }
+}
 
-  .todo-item__text {
-    @apply line-through text-gray-500 dark:text-gray-400;
-  }
+.todo-item__checkmark {
+  @apply bg-gray-300 border-gray-300 dark:bg-gray-600 dark:border-gray-600;
+}
 
-  .todo-item__priority-select {
-    @apply opacity-50 cursor-not-allowed bg-gray-200 dark:bg-gray-600;
-  }
+.todo-item__text {
+  @apply text-gray-900 dark:text-gray-400;
+}
 
-  .todo-item__delete {
-    @apply opacity-50 hover:opacity-100;
-  }
+.todo-item__priority-select {
+  @apply opacity-50 bg-gray-200 dark:bg-gray-600;
+}
+
+.todo-item__delete {
+  @apply opacity-50 hover:opacity-100;
 }
 
 .todo-item__priority-select:disabled {
   @apply opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-700;
 }
-
-
 
 .todo-item__checkbox-label {
   @apply relative flex-shrink-0 cursor-pointer;
@@ -251,10 +280,6 @@ input:checked ~ .custom-checkbox {
 input:checked ~ .custom-checkbox::after {
   @apply opacity-100;
 }
-
-
-
-
 
 @media (max-width: 640px) {
   .todo-item__checkmark {

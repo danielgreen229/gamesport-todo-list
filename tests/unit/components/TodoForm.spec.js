@@ -19,7 +19,7 @@ describe('TodoForm', () => {
 
   it('submits new todo', async () => {
     const todoStore = useTodoStore()
-    todoStore.addTodo = vi.fn() // Мокаем метод
+    todoStore.addTodo = vi.fn() 
     
     const wrapper = mount(TodoForm)
     await wrapper.find('input').setValue('Test task')

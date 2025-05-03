@@ -19,6 +19,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useTodoStore } from '@/stores/todoStore'
 import { useSettingsStore } from '@/stores/settingsStore'
 
@@ -32,20 +33,19 @@ const filters = [
   { value: 'done' }
 ]
 
-const getFilterLabel = (filterValue) => {
+const getFilterLabel = computed(() => (filterValue) => {
   switch(filterValue) {
     case 'all': return settingsStore.t('home.allTasks')
     case 'active': return settingsStore.t('home.activeTasks')
     case 'done': return settingsStore.t('home.completedTasks')
     default: return filterValue
   }
-}
+})
 
 const handleFilterChange = (filterValue) => {
   store.filter = filterValue
   emit('tab-changed', filterValue) 
 }
-
 </script>
 
 <style scoped>

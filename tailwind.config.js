@@ -1,9 +1,14 @@
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import path from 'path'
+import tailwindcss from 'tailwindcss'
+import autoprefixer from 'autoprefixer'
+import viteCompression from 'vite-plugin-compression'
+
 module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.vue",
-    "./src/**/*.js",
-    "./src/**/*.ts",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -28,6 +33,56 @@ module.exports = {
       }
     }
   },
-  plugins: [],
-  darkMode: 'class'
+  css: {
+    postcss: './postcss.config.cjs' // Явно указываем путь
+  },
+  plugins: [
+    vue(),
+    viteCompression({
+      algorithm: 'gzip',
+      ext: '.gz',
+      threshold: 10240, // Сжимать файлы > 10KB
+      deleteOriginFile: false // Не удалять оригинальные файлы
+    }),
+    // Brotli-сжатие (опционально)
+    viteCompression({
+      algorithm: 'brotliCompress',
+      ext: '.br',
+      threshold: 10240
+    })
+  ],
+  build: {
+    minify: 'terser', 
+    terserOptions: {
+      compress: {
+        drop_console: true, 
+        drop_debugger: true 
+      }
+    }
+  },
+  darkMode: 'class',
+  // Оптимизации для production
+  corePlugins: {
+    float: false,    // Отключаем неиспользуемые плагины
+    clear: false,
+    skew: false
+  },
+  purge: {
+    enabled: process.env.NODE_ENV === 'production',
+    content: [
+      "./index.html",
+      "./src/**/*.{vue,js,ts,jsx,tsx}",
+    ],
+    options: {
+      safelist: [
+        'dark',      // Сохраняем классы для dark mode
+        /dark-mode:/, 
+        /bg-dark-/,
+        /text-dark-/,
+        /border-dark-/
+      ],
+      keyframes: true,
+      fontFace: true
+    }
+  }
 }

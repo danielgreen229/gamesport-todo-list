@@ -4,7 +4,6 @@
 
 [![Демо](https://img.shields.io/badge/ДЕМО-Онлайн-brightgreen)](https://gamesport-todo-list.netlify.app/)
 [![Репозиторий](https://img.shields.io/badge/GITHUB-Репозиторий-blue)](https://github.com/danielgreen229/gamesport-todo-list)
-[![Видео](https://img.shields.io/badge/ВИДЕО-Демонстрация-red)](https://youtu.be/ваша-ссылка) *(Замените на реальную ссылку)*
 
 ## ✨ Возможности
 

@@ -16,6 +16,7 @@
       @click="nextPage"
       :disabled="currentPage === totalPages"
       class="pagination-btn"
+      data-testid="next-page-btn"
     >
       →
     </button>
@@ -23,6 +24,8 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
   currentPage: { type: Number, required: true },
   totalPages: { type: Number, required: true }
