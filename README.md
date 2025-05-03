@@ -5,6 +5,12 @@
 [![Демо](https://img.shields.io/badge/ДЕМО-Онлайн-brightgreen)](https://gamesport-todo-list.netlify.app/)
 [![Репозиторий](https://img.shields.io/badge/GITHUB-Репозиторий-blue)](https://github.com/danielgreen229/gamesport-todo-list)
 
+
+
+https://github.com/user-attachments/assets/5d3f3529-4998-4a35-b94a-fc28e6c5cc8d
+
+
+Ссылка на Демо: https://gamesport-todo-list.netlify.app/
 ## ✨ Возможности
 
 ✅ **Добавление, редактирование и удаление задач**  
