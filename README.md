@@ -139,7 +139,7 @@ npx cypress open
     }
   ]
 }
-
+```
 ## Оптимизация production-сборки
 
 ### В vite.config.js:
